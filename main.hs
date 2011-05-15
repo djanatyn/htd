@@ -1,4 +1,5 @@
 import System.Environment
+import System.IO
 
 usage :: IO ()
 usage = do
@@ -12,24 +13,26 @@ usage = do
 
 parse :: [String] -> IO ()
 parse args
-    | head args == "-t" = addItem $ tail args
     | head args == "-l" = listItems $ tail args
+    | head args == "-t" = addItem $ tail args
     | head args == "-r" = removeItems $ tail args
     | otherwise         = do
-        putStrLn "error parsing arguments - see usage:"
+        putStrLn "\nerror parsing arguments - see usage:"
         usage
 
 addItem :: [String] -> IO ()
 addItem args = do
     -- stuff will go here later
     putStrLn "adding todo into file..."
-    putStrLn "woops, not implemented yet ;)"
+    appendFile "todo.txt" ((args !! 0) ++ "\n")
 
 listItems :: [String] -> IO ()
 listItems args = do
     -- more stuff will go here
-    putStrLn "reading from todo file..."
-    putStrLn "woops, not implemented yet ;)"
+    handle <- openFile "todo.txt" ReadMode
+    text <- hGetContents handle
+    putStr text
+    hClose handle 
 
 removeItems :: [String] -> IO ()
 removeItems args = do
@@ -40,8 +43,5 @@ removeItems args = do
 main :: IO ()
 main = do
     args <- getArgs
-    if length args /= 2
-    then do
-        putStrLn "\nerror: please specify 2 command line arguments\n"
-        usage
-    else parse args
+    -- notice no error handling as of yet
+    parse args
