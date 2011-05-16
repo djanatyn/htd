@@ -7,14 +7,14 @@ usage = do
     putStrLn "usage:"
     putStrLn " htd <action> [options]\n"
     putStrLn "actions:"
-    putStrLn " -a           add an article to a todo list"
-    putStrLn " -l           list articles in a todo list"
-    putStrLn " -r           remove item from a todo list\n"
+    putStrLn " -a 'entry'          add an entry to the todo list"
+    putStrLn " -l                  list articles in a todo list"
+    putStrLn " -r                  remove item from a todo list\n"
 
 parse :: [String] -> IO ()
 parse args
     | head args == "-l" = listItems $ tail args
-    | head args == "-t" = addItem $ tail args
+    | head args == "-a" = addItem $ tail args
     | head args == "-r" = removeItems $ tail args
     | otherwise         = do
         putStrLn "\nerror parsing arguments - see usage:"
@@ -30,7 +30,7 @@ listItems :: [String] -> IO ()
 listItems args = do
     -- more stuff will go here
     handle <- openFile "todo.txt" ReadMode
-    text <- hGetContents handle
+    text <- hGetLine handle
     putStr text
     hClose handle 
 
